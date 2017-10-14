@@ -4,7 +4,7 @@ RUN echo "Creating directories..." \
     && mkdir /project \
     && mkdir /project/var \
     && mkdir /project/var/data \
-    && mkdir /project/config \
+    && mkdir /project/var/config \
     && echo "[Done creating directories]"
 
 #

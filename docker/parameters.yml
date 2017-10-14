@@ -2,7 +2,6 @@
 parameters:
     database_path: '%kernel.project_dir%/var/data/data.sqlite'
     database_name: symfony
-    secret: 81b2838f5b55cc420182fd11711952b5c568a9ca
     horizon_url: 'https://horizon.stellar.org/'
-    default_config_dir: /project/config
-
+    default_config_dir: '%kernel.project_dir%/var/config/'
+    secret: ThisTokenIsNotSoSecretChangeIt

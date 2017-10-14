@@ -8,7 +8,7 @@ parameters:
     # testnet is at: https://horizon-testnet.stellar.org/
     horizon_url: 'https://horizon.stellar.org/'
 
-    default_config_dir: ~
+    default_config_dir: '%kernel.project_dir%/var/config/'
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
