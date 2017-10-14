@@ -1,0 +1,9 @@
+[
+  {
+    "source": "payments",
+    "filters": [
+      { "type": "include", "field": "account", "ifValue": "GBIA4FH6TV64KSPDAJCNUQSM7PFL4ILGUVJDPCLUOPJ7ONMKBBVUQHRO" }
+    ],
+    "destination": "https://example.com/stellar/on-payment"
+  }
+]

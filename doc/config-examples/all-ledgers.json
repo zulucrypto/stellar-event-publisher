@@ -1,0 +1,6 @@
+[
+  {
+    "source": "ledgers",
+    "destination": "https://example.com/stellar/on-ledger"
+  }
+]

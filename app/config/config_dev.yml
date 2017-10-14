@@ -1,0 +1,33 @@
+imports:
+    - { resource: config.yml }
+
+framework:
+    router:
+        resource: '%kernel.project_dir%/app/config/routing_dev.yml'
+        strict_requirements: true
+    profiler: { only_exceptions: false }
+
+web_profiler:
+    toolbar: true
+    intercept_redirects: false
+
+monolog:
+    channels: ['deliver_webhooks', 'watch_stellar', 'supervisor']
+    handlers:
+        main:
+            type: stream
+            path: '%kernel.logs_dir%/%kernel.environment%.log'
+            level: debug
+            channels: ['!event']
+        console:
+            type: console
+            verbosity_levels:
+                VERBOSITY_NORMAL:       NOTICE
+                VERBOSITY_VERBOSE:      INFO
+                VERBOSITY_VERY_VERBOSE: DEBUG
+                VERBOSITY_DEBUG:        DEBUG
+            process_psr_3_messages: false
+            channels: ['!event', '!doctrine', '!console']
+
+#swiftmailer:
+#    delivery_addresses: ['me@example.com']

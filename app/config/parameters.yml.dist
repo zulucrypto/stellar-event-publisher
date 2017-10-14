@@ -1,0 +1,14 @@
+# This file is a "template" of what your parameters.yml file should look like
+# Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
+# https://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
+parameters:
+    database_path: '%kernel.project_dir%/var/data/data.sqlite'
+    database_name: symfony
+
+    # testnet is at: https://horizon-testnet.stellar.org/
+    horizon_url: 'https://horizon.stellar.org/'
+
+    default_config_dir: ~
+
+    # A secret key that's used to generate certain security-related tokens
+    secret: ThisTokenIsNotSoSecretChangeIt
