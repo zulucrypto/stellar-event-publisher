@@ -1,5 +1,10 @@
 FROM php:7.1
 
+RUN echo "Installing additional requirements..." \
+    && docker-php-ext-install -j$(nproc) \
+        pcntl \
+    && echo "[Done installing additional requirements]"
+
 RUN echo "Creating directories..." \
     && mkdir /project \
     && mkdir /project/var \
@@ -18,8 +23,6 @@ COPY web/ /project/web/
 #
 # Add in docker configuration files
 COPY docker/parameters.yml /project/app/config/parameters.yml
-COPY docker/docker-entrypoint.sh /project/docker-entrypoint.sh
-
 
 #
 # Create initial database schema
@@ -36,4 +39,5 @@ ENV SEP_LOG_VERBOSITY="NORMAL"
 ENV SEP_CONFIG_FILE=""
 
 WORKDIR /project
-ENTRYPOINT /project/docker-entrypoint.sh
+ENTRYPOINT [ "/project/bin/console" ]
+CMD [ "sep:supervisor" ]
