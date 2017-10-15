@@ -8,6 +8,7 @@ use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
 
 class SupervisorCommand extends BaseEventPublisherCommand
@@ -16,6 +17,11 @@ class SupervisorCommand extends BaseEventPublisherCommand
      * @var Logger
      */
     protected $logger;
+
+    /**
+     * @var bool
+     */
+    protected $doShutdown;
 
     protected function configure()
     {
@@ -34,6 +40,9 @@ class SupervisorCommand extends BaseEventPublisherCommand
         $this->logger = $this->getContainer()->get('monolog.logger.supervisor');
         $watcherProcess = null;
         $deliverProcess = null;
+
+        // Trap signals
+        $this->registerSignalHandlers();
 
         // Ensure processes stay running
         while (true) {
@@ -63,7 +72,15 @@ class SupervisorCommand extends BaseEventPublisherCommand
                 $deliverProcess = $this->startBackgroundCommand($input, $output, 'sep:deliver-webhooks');
             }
 
-            sleep(5);
+            pcntl_signal_dispatch();
+            usleep(1000);
+
+            if ($this->doShutdown) {
+                $watcherProcess->stop();
+                $deliverProcess->stop();
+
+                break;
+            }
         }
     }
 
@@ -78,12 +95,31 @@ class SupervisorCommand extends BaseEventPublisherCommand
 
         $process = new Process($command, __DIR__ . '/../../../bin/', [], null, null);
         $process->inheritEnvironmentVariables(true);
-        $process->setTty(true);
+        try {
+            $process->setTty(true);
+        }
+        catch (RuntimeException $e) {
+            // Don't care, just means no color support
+        }
 
         $process->start(function ($type, $buffer) use ($output) {
             $output->write($buffer);
         });
 
         return $process;
+    }
+
+    protected function registerSignalHandlers()
+    {
+        // Interrupt (ctrl+c)
+        pcntl_signal(SIGINT, function($signal) {
+            $this->logger->warning('Got SIGINT, shutting down');
+            $this->doShutdown = true;
+        });
+
+        pcntl_signal(SIGTERM, function($signal) {
+            $this->logger->warning('Got SIGTERM, shutting down');
+            $this->doShutdown = true;
+        });
     }
 }

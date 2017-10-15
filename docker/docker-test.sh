@@ -7,7 +7,7 @@ set -e
 docker build --tag sep:dev .
 
 # Override entrypoint for debugging
-docker run --rm -it --entrypoint /bin/bash sep:dev
+#docker run --rm -it --entrypoint /bin/bash sep:dev
 
 # Typical usage
-#docker run --rm -it sep:dev
+docker run --rm --name sep_dev sep:dev
